@@ -1,0 +1,12 @@
+apiVersion: networking.snappcloud.io/v1alpha1
+kind: ExternalService
+metadata:
+  labels:
+    app.kubernetes.io/name: externalservice
+    app.kubernetes.io/instance: externalservice-sample
+    app.kubernetes.io/part-of: lbaas-operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: lbaas-operator
+  name: externalservice-sample
+spec:
+  # TODO(user): Add fields here
