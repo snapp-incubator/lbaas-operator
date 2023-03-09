@@ -8,6 +8,17 @@ rules:
 - apiGroups:
   - networking.snappcloud.io
   resources:
+  - endpoints
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - networking.snappcloud.io
+  resources:
   - externalservices
   verbs:
   - create
@@ -31,3 +42,14 @@ rules:
   - get
   - patch
   - update
+- apiGroups:
+  - networking.snappcloud.io
+  resources:
+  - services
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch

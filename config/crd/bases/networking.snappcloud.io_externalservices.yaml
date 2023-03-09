@@ -61,19 +61,14 @@ spec:
                       format: int32
                       type: integer
                     protocol:
-                      allOf:
-                      - default: TCP
-                      - default: TCP
+                      default: TCP
                       description: The IP Protocol for this port. Supports "TCP",
                         "UDP", and "SCTP". Default is TCP.
+                      enum:
+                      - TCP
+                      - UDP
+                      - SCTP
                       type: string
-                    targetPort:
-                      description: 'TargetPort is number of the port to access on
-                        the addresses that will be existing in Endpoints object. Number
-                        must be in the range 1 to 65535. More info: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service'
-                      maximum: 65535
-                      minimum: 1
-                      type: integer
                   required:
                   - port
                   type: object
@@ -196,10 +191,8 @@ spec:
                   - type
                   type: object
                 type: array
-              serviceAddresses:
-                items:
-                  type: string
-                type: array
+              serviceAddress:
+                type: string
             type: object
         type: object
     served: true

@@ -38,7 +38,7 @@ type ExternalServicePort struct {
 	// The IP Protocol for this port. Supports "TCP", "UDP", and "SCTP".
 	// Default is TCP.
 	//+kubebuilder:validation:Optional
-	//+kubebuilder:default="TCP"
+	//+kubebuilder:validation:Enum=TCP;UDP;SCTP
 	Protocol corev1.Protocol `json:"protocol,omitempty"`
 
 	// The application protocol for this port.
@@ -53,14 +53,6 @@ type ExternalServicePort struct {
 	// The Port that will be exposed by this service.
 	//+kubebuilder:validation:Required
 	Port int32 `json:"port"`
-
-	// TargetPort is number of the port to access on the addresses that will be existing in Endpoints object.
-	// Number must be in the range 1 to 65535.
-	// More info: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
-	//+kubebuilder:validation:Optional
-	//+kubebuilder:validation:Minimum=1
-	//+kubebuilder:validation:Maximum=65535
-	TargetPort int `json:"targetPort,omitempty"`
 }
 
 type StaticEndpoint struct {

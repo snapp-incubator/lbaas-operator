@@ -9,4 +9,5 @@ metadata:
     app.kubernetes.io/created-by: lbaas-operator
   name: externalservice-sample
 spec:
-  # TODO(user): Add fields here
+  type: static
+
