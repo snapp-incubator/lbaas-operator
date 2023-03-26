@@ -102,6 +102,7 @@ func (r *ExternalServiceReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		return ctrl.Result{}, nil
 	} else {
 		// TODO: DeepEqual function does not operate good for this part because kubernetes adds values to fields after creation
+		// we can check for more field differences here.
 		if !reflect.DeepEqual(&desiredService.Spec.Type, &currentService.Spec.Type) ||
 			!reflect.DeepEqual(&desiredService.Labels, &currentService.Labels) {
 			err = r.Update(ctx, &desiredService)
