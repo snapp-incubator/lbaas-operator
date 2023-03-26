@@ -80,7 +80,7 @@ func (r *ExternalServiceReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		return ctrl.Result{Requeue: true}, nil
 	} else {
 		// TODO: DeepEqual function does not operate good for this part because kubernetes adds values to fields after creation
-		if !reflect.DeepEqual(&desiredEndpoints.Subsets, &currentEndpoints.Subsets) {
+		if !reflect.DeepEqual(&desiredEndpoints.Subsets, &currentEndpoints.Subsets) || !reflect.DeepEqual(&desiredEndpoints.Labels, &currentEndpoints.Labels) {
 			err = r.Update(ctx, &desiredEndpoints)
 			if err != nil {
 				logger.Error(err, "could not update endpoints object")
@@ -102,7 +102,8 @@ func (r *ExternalServiceReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		return ctrl.Result{}, nil
 	} else {
 		// TODO: DeepEqual function does not operate good for this part because kubernetes adds values to fields after creation
-		if !reflect.DeepEqual(&desiredService.Spec, &currentService.Spec) {
+		if !reflect.DeepEqual(&desiredService.Spec.Type, &currentService.Spec.Type) ||
+			!reflect.DeepEqual(&desiredService.Labels, &currentService.Labels) {
 			err = r.Update(ctx, &desiredService)
 			if err != nil {
 				logger.Error(err, "could not update service object")
