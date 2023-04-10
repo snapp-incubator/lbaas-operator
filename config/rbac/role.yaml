@@ -1,0 +1,55 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - networking.snappcloud.io
+  resources:
+  - endpoints
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - networking.snappcloud.io
+  resources:
+  - externalservices
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - networking.snappcloud.io
+  resources:
+  - externalservices/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - networking.snappcloud.io
+  resources:
+  - externalservices/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - networking.snappcloud.io
+  resources:
+  - services
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
