@@ -20,6 +20,8 @@ jobs:
           args: --timeout 5m
   test:
    name: test
+   needs:
+     - lint
    runs-on: ubuntu-latest
    steps:
      - uses: actions/checkout@v2
@@ -35,8 +37,7 @@ jobs:
     name: docker
     runs-on: ubuntu-latest
     needs:
-      - lint
-      # - test
+      - test
     steps:
       - uses: actions/checkout@v2
       - uses: docker/setup-qemu-action@v1
