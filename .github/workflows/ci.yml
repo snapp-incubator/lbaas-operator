@@ -32,7 +32,7 @@ jobs:
      - run: make test
      - uses: codecov/codecov-action@v1
        with:
-         files: coverage.out
+         files: cover.out
   docker:
     name: docker
     runs-on: ubuntu-latest
