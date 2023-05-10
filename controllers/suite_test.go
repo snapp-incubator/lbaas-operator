@@ -168,11 +168,8 @@ var _ = Describe("ExternalService controller", func() {
 						Name:      "test-external-service",
 					}, svc)
 
-					if err != nil {
-						return true
-					}
+					return err != nil
 
-					return false
 				}, time.Second, time.Millisecond*10).Should(BeTrue())
 			})
 			It("Should not create an Endpoints object", func() {
@@ -182,11 +179,9 @@ var _ = Describe("ExternalService controller", func() {
 						Namespace: "default",
 						Name:      "test-external-service",
 					}, ep)
-					if err != nil {
-						return true
-					}
 
-					return false
+					return err != nil
+
 				}, time.Second, time.Millisecond*10).Should(BeTrue())
 			})
 			It("Should not update status", func() {
