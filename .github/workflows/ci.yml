@@ -20,8 +20,6 @@ jobs:
           args: --timeout 5m
   test:
    name: test
-   needs:
-     - lint
    runs-on: ubuntu-latest
    steps:
      - uses: actions/checkout@v2
@@ -37,6 +35,7 @@ jobs:
     name: docker
     runs-on: ubuntu-latest
     needs:
+      - lint
       - test
     steps:
       - uses: actions/checkout@v2
