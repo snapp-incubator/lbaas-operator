@@ -70,7 +70,7 @@ spec:
         - /manager
         args:
         - --leader-elect
-        image: controller:latest
+        image: ghcr.io/snapp-incubator/lbaas-operator:v1.0.0
         name: manager
         securityContext:
           allowPrivilegeEscalation: false
