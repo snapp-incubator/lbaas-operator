@@ -6,9 +6,20 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
-  - networking.snappcloud.io
+  - ""
   resources:
   - endpoints
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - services
   verbs:
   - create
   - get
@@ -42,14 +53,3 @@ rules:
   - get
   - patch
   - update
-- apiGroups:
-  - networking.snappcloud.io
-  resources:
-  - services
-  verbs:
-  - create
-  - get
-  - list
-  - patch
-  - update
-  - watch
