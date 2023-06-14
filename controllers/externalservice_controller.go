@@ -21,6 +21,7 @@ import (
 	"fmt"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/intstr"
 	"reflect"
 	"time"
 
@@ -103,9 +104,10 @@ func (r *ExternalServiceReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 	} else {
 		// TODO: DeepEqual function does not operate good for this part because kubernetes adds values to fields after creation
 		// we can check for more field differences here.
-		if !reflect.DeepEqual(&desiredService.Spec.Type, &currentService.Spec.Type) ||
-			!reflect.DeepEqual(&desiredService.Labels, &currentService.Labels) ||
-			!reflect.DeepEqual(&desiredService.Spec.Ports, &currentService.Spec.Ports) {
+		isTypeEqual := reflect.DeepEqual(&desiredService.Spec.Type, &currentService.Spec.Type)
+		areLabelsEqual := reflect.DeepEqual(&desiredService.Labels, &currentService.Labels)
+		arePortsEqual := reflect.DeepEqual(&desiredService.Spec.Ports, &currentService.Spec.Ports)
+		if !isTypeEqual || !areLabelsEqual || !arePortsEqual {
 			err = r.Update(ctx, &desiredService)
 			if err != nil {
 				logger.Error(err, "could not update service object")
@@ -171,6 +173,7 @@ func (r *ExternalServiceReconciler) getDesiredService(externalService networking
 			Protocol:    port.Protocol,
 			AppProtocol: port.AppProtocol,
 			Port:        port.Port,
+			TargetPort:  intstr.FromInt(int(port.Port)),
 		})
 	}
 	svc := corev1.Service{
