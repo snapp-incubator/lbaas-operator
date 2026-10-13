@@ -18,48 +18,51 @@ package v1alpha1
 
 import (
 	"context"
+
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
-	"sigs.k8s.io/controller-runtime/pkg/webhook"
+	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 )
 
 const ExternalServiceGroup = "networking.snappcloud.io"
-
-var kubernetesClient client.Client
 
 // log is for logging in this package.
 var externalservicelog = logf.Log.WithName("externalservice-resource")
 
 func (r *ExternalService) SetupWebhookWithManager(mgr ctrl.Manager) error {
-	kubernetesClient = mgr.GetClient()
-	return ctrl.NewWebhookManagedBy(mgr).
-		For(r).
+	return ctrl.NewWebhookManagedBy(mgr, r).
+		WithValidator(&ExternalServiceValidator{Client: mgr.GetClient()}).
 		Complete()
 }
 
 //+kubebuilder:webhook:path=/validate-networking-snappcloud-io-v1alpha1-externalservice,mutating=false,failurePolicy=fail,sideEffects=None,groups=networking.snappcloud.io,resources=externalservices,verbs=create,versions=v1alpha1,name=vexternalservice.kb.io,admissionReviewVersions=v1
 
-var _ webhook.Validator = &ExternalService{}
+// ExternalServiceValidator validates ExternalService objects on admission.
+// +kubebuilder:object:generate=false
+type ExternalServiceValidator struct {
+	Client client.Client
+}
 
-// ValidateCreate implements webhook.Validator so a webhook will be registered for the type
-func (r *ExternalService) ValidateCreate() error {
+var _ admission.Validator[*ExternalService] = &ExternalServiceValidator{}
+
+// ValidateCreate rejects an ExternalService when a Service with the same name already exists.
+func (v *ExternalServiceValidator) ValidateCreate(ctx context.Context, r *ExternalService) (admission.Warnings, error) {
 	externalservicelog.Info("validating create external service", "name", r.Name)
 	var svc corev1.Service
-	err := kubernetesClient.Get(context.Background(), types.NamespacedName{
+	err := v.Client.Get(ctx, types.NamespacedName{
 		Namespace: r.Namespace,
 		Name:      r.Name,
 	}, &svc)
 	if errors.IsNotFound(err) {
-		return nil
+		return nil, nil
 	}
-	return errors.NewInvalid(
+	return nil, errors.NewInvalid(
 		schema.GroupKind{
 			Group: ExternalServiceGroup,
 			Kind:  "ExternalService",
@@ -71,12 +74,12 @@ func (r *ExternalService) ValidateCreate() error {
 	)
 }
 
-// ValidateUpdate implements webhook.Validator so a webhook will be registered for the type
-func (r *ExternalService) ValidateUpdate(old runtime.Object) error {
-	return nil
+// ValidateUpdate implements admission.Validator.
+func (v *ExternalServiceValidator) ValidateUpdate(_ context.Context, _, _ *ExternalService) (admission.Warnings, error) {
+	return nil, nil
 }
 
-// ValidateDelete implements webhook.Validator so a webhook will be registered for the type
-func (r *ExternalService) ValidateDelete() error {
-	return nil
+// ValidateDelete implements admission.Validator.
+func (v *ExternalServiceValidator) ValidateDelete(_ context.Context, _ *ExternalService) (admission.Warnings, error) {
+	return nil, nil
 }

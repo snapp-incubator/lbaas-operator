@@ -63,7 +63,7 @@ func (r *ExternalServiceReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 	}
 
 	// This part of code if for use-cases that user wants to skip reconcile loop and make objects kind of unmanaged.
-	_, shouldSkip := externalService.ObjectMeta.GetAnnotations()[SkipReconcileAnnotation]
+	_, shouldSkip := externalService.GetAnnotations()[SkipReconcileAnnotation]
 	if shouldSkip {
 		logger.Info("found " + SkipReconcileAnnotation + " in annotations. Skipping this reconcile loop.")
 		return ctrl.Result{RequeueAfter: SkipReconcileDuration}, nil
@@ -78,7 +78,9 @@ func (r *ExternalServiceReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 			logger.Error(err, "could not create endpoints object")
 			return ctrl.Result{}, err
 		}
-		return ctrl.Result{Requeue: true}, nil
+		// The new Endpoints object is owned by this ExternalService, so its
+		// creation event triggers the next reconcile.
+		return ctrl.Result{}, nil
 	} else {
 		// TODO: DeepEqual function does not operate good for this part because kubernetes adds values to fields after creation
 		if !reflect.DeepEqual(&desiredEndpoints.Subsets, &currentEndpoints.Subsets) || !reflect.DeepEqual(&desiredEndpoints.Labels, &currentEndpoints.Labels) {

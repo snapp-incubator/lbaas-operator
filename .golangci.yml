@@ -1,0 +1,11 @@
+version: "2"
+
+linters:
+  exclusions:
+    rules:
+      # The operator deliberately manages core/v1 Endpoints for selector-less
+      # Services. Moving to discovery/v1 EndpointSlice changes its behaviour and
+      # RBAC, so it is out of scope for dependency updates.
+      - linters:
+          - staticcheck
+        text: "SA1019: k8s.io/api/core/v1.Endpoint"
